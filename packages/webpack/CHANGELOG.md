@@ -1,5 +1,11 @@
 # @prefresh/webpack
 
+## 3.1.1
+
+### Patch Changes
+
+- [`010f21b`](https://github.com/JoviDeCroock/prefresh/commit/010f21b947d0cdee59fac6af6a17d10cb6a696b5) [#287](https://github.com/JoviDeCroock/prefresh/pull/287) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Fix webpack commonjs export
+
 ## 3.1.0
 
 ### Minor Changes

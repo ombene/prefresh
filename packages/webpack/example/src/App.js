@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import CustomAnchor from './CustomAnchor';
 import { useCounter } from './useCounter';
 
 const Comp1 = () => {
@@ -14,6 +15,7 @@ const Comp1 = () => {
 export function App(props) {
   return (
     <div>
+      <CustomAnchor href="/">click me</CustomAnchor>
       <Comp1 />
     </div>
   );

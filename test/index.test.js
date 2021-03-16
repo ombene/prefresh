@@ -46,6 +46,11 @@ describe('Prefresh integrations', () => {
         return el ? el.evaluate(el => el.textContent) : null;
       };
 
+      const getTagName = async selectorOrEl => {
+        const el = await getEl(selectorOrEl);
+        return el ? el.evaluate(el => el.tagName) : null;
+      };
+
       jest.setTimeout(100000);
 
       afterAll(async () => {
@@ -244,6 +249,43 @@ describe('Prefresh integrations', () => {
           () => getText(text),
           "I'm a reloaded class component"
         );
+      });
+
+      test('add a string-component file using a higher-order component', async () => {
+        const compPath = path.join(
+          getTempDir(integration),
+          'src/decoratedStringBasedComponent.jsx'
+        );
+        await fs.writeFile(
+          compPath,
+          `import { h } from 'preact';
+const hoc = (val) => val;
+const StringBasedComponent = "span";
+const DecoratedStringBasedComponent = hoc(StringBasedComponent);
+export default DecoratedStringBasedComponent;`
+        );
+
+        await updateFile('src/app.jsx', content => {
+          let newContent =
+            'import DecoratedStringBasedComponent from "./decoratedStringBasedComponent.jsx";\n' +
+            content;
+          newContent = newContent.replace(
+            `<Test />`,
+            `<Test />\n      <DecoratedStringBasedComponent className="decorated-string-based-component" />\n`
+          );
+          return newContent;
+        });
+        await timeout(2000);
+
+        const testElemClass = '.decorated-string-based-component';
+        await expectByPolling(() => getTagName(testElemClass), 'SPAN');
+
+        await updateFile('src/decoratedStringBasedComponent.jsx', c =>
+          c.replace('"span"', '"div"')
+        );
+        await timeout(2000);
+
+        await expectByPolling(() => getTagName(testElemClass), 'DIV');
       });
 
       test('can change methods', async () => {
